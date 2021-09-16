@@ -1,0 +1,105 @@
+﻿@model WebAppECartDemo.ViewModel.ItemViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Add New Item</h2>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnSave").click(function () {
+            SaveItem();
+        });
+    });
+
+    function ResetItem() {
+        $("#CategoryId").val("1");
+        $("#ItemCode").val("");
+        $("#ItemName").val("");
+        $("#Description").val("");
+        $("#ItemPrice").val("");
+        $("#ImagePath").val("");
+    }
+
+    function SaveItem() {
+        var formData = new FormData();
+        formData.append("CategoryId", $("#CategoryId").val());
+        formData.append("ItemCode", $("#ItemCode").val());
+        formData.append("ItemName", $("#ItemName").val());
+        formData.append("Description", $("#Description").val());
+        formData.append("ItemPrice", $("#ItemPrice").val());
+        formData.append("ImagePath", $("#ImagePath").get(0).files[0]);
+
+        $.ajax({
+            async: true,
+            dataType: 'JSON',
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            url: '/Item/Index',
+            data: formData,
+            success: function (data) {
+                if (data.Success) {
+                    alert(data.Message);
+                    ResetItem();
+                }
+            },
+            error: function () {
+                alert("There is some problem to add Item.");
+            }
+        });
+    }
+</script>
+
+
+<div class="container">
+
+    <div class="col-md-4">
+        <div class="form-group">
+            Category:
+            @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategorySelectListItem, "Value",
+            "Text"), htmlAttributes: new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            Item Code:
+            @Html.TextBoxFor(expression: model => model.ItemCode, htmlAttributes: new { @class = "form-control", autocomplete = "Off" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            Item Name:
+            @Html.TextBoxFor(expression: model => model.ItemName, htmlAttributes: new { @class = "form-control", autocomplete = "Off" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            Description:
+            @Html.TextBoxFor(expression: model => model.Description, htmlAttributes: new { @class = "form-control", autocomplete = "Off" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            Item Price:
+            @Html.TextBoxFor(expression: model => model.ItemPrice, htmlAttributes: new { @class = "form-control", autocomplete = "Off" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            Image Page:
+            @Html.TextBoxFor(expression: model => model.ImagePath, htmlAttributes: new { type = "file", @class = "form-control" })
+        </div>
+    </div>
+
+    <div>
+        <input type="button" value="Save" name="save" class="btn btn btn-primary" id="btnSave" />
+        &nbsp;
+        <input type="button" value="Reset" name="reset" class="btn btn btn-danger" />
+    </div>
+</div>
+
